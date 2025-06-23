@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "sources": ["models"],
+  "maven": {
+    "dependencies": ["software.amazon.smithy.ts:smithy-ts-codegen:0.0.1"]
+  },
+  "plugins": {
+    "ts-client-codegen": {
+      "service": "com.amazonaws.sqs#AmazonSQS"
+	}
+  }
+}

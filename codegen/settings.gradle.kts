@@ -1,5 +1,5 @@
-rootProject.name = "smithy-lua"
-include(":smithy-lua-codegen")
+rootProject.name = "sdk-codegen-workshop"
+include(":smithy-ts-codegen")
 
 pluginManagement {
     repositories {
