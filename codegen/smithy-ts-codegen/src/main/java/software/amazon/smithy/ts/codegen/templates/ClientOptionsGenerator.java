@@ -1,5 +1,6 @@
 package software.amazon.smithy.ts.codegen.templates;
 
+import software.amazon.smithy.ts.codegen.RuntimeTypes;
 import software.amazon.smithy.ts.codegen.TypeScriptWriter;
 
 /**
@@ -13,7 +14,8 @@ public class ClientOptionsGenerator {
 
     public void render(TypeScriptWriter writer) {
         writer.openBlock("export type $L = {", "}", STRUCTURE_NAME, () -> {
-            // render config fields...
+            writer.write("region: string");
+            writer.write("credentials: $T", RuntimeTypes.CREDENTIALS.Credentials);
         });
     }
 }
