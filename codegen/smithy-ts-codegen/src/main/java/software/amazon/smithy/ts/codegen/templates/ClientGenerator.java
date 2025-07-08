@@ -1,6 +1,7 @@
 package software.amazon.smithy.ts.codegen.templates;
 
 import software.amazon.smithy.model.Model;
+import software.amazon.smithy.model.knowledge.TopDownIndex;
 import software.amazon.smithy.model.shapes.ServiceShape;
 import software.amazon.smithy.ts.codegen.TypeScriptWriter;
 
@@ -35,9 +36,24 @@ public class ClientGenerator {
         writer.openBlock("export class $L {", "}", STRUCTURE_NAME, () -> {
             // 1. render constructor
             // ...
+            writer.write("public readonly options: $L", ClientOptionsGenerator.STRUCTURE_NAME);
+            writer.write("");
+            writer.openBlock("constructor(options: $L) {", "}", ClientOptionsGenerator.STRUCTURE_NAME, () -> {
+                writer.write("this.options = options");
+            });
+            writer.write("");
 
             // 2. render operation APIs
             // ...
+            for (var operation : TopDownIndex.of(model).getContainedOperations(service)) {
+                var name = operation.getId().getName();
+                writer.openBlock("public async $L(input: $L): Promise<$L> {", "}",
+                        name, operation.getInputShape().getName(), operation.getOutputShape().getName(),
+                        () -> {
+                            writer.write("return await do$L(this, input)", name);
+                        });
+                writer.write("");
+            }
         });
     }
 }

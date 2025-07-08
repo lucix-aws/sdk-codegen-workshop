@@ -41,11 +41,19 @@ public class ProtocolGenerator {
     // * one line to serialize the request body
     // * three lines to set headers required by the protocol
     public void renderSerialize(TypeScriptWriter writer) {
+        writer.write("request.body = JSON.stringify(input)");
+        writer.write("request.headers['X-Amz-Target'] = '$L.$L'", service.getId().getName(), operation.getId().getName());
+        writer.write("request.headers['Content-Type'] = 'application/x-amz-json-1.0'");
+        writer.write("request.headers['Content-Length'] = request.body.length");
     }
 
     // implicit contracts:
     // * operation codegen has declared a variable "response" of type HTTPResponse in-scope
     // * this method will declare a variable "output" of type corresponding to the operation's output type
+    //
+    // HINT: You can ignore deserialization of unions, since SQS does not use any. The solution is one line.
     public void renderDeserialize(TypeScriptWriter writer) {
+        var output = operation.getOutputShape().getName();
+        writer.write("const output: $L = JSON.parse(response.body || '{}')", output);
     }
 }
